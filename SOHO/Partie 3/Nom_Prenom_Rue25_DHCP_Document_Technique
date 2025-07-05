@@ -84,12 +84,80 @@ Configurer un forwarder pour les requêtes externes
 7 - Une fois l'installation terminé, cliquer sur "Close"  
 
 
-Configuration en Contrôleur de domaine  
+#### Configuration en Contrôleur de domaine  
 
 1 - Toujours dans le Server Manager, Clic sur l'icone du drapeau en haut à droite (⚠️) → Promote this server to a domain controller  
 2 - Sélectionner "Add a new forest"  
 3 - Dans "Root domain name" mettre :  rue25.com  puis cliquer sur "Next"  
 4 - Entrer un mot de passe pour le DSRM, puis cliquer sur "Next" (5 fois)  
 5 - Attendre le Prerequisite check completed, puis cliquer sur "Install" et attendre que le serveur redémarre   
+6 - Ouvrir la session Administrator  
+   
+#### Création d'une hiérarchie AD  
+   
+1 - Aller dans Server manager → Tools → Active Directory Users and Computers  
+2 - Dans le menu View, sélectionner Advanced Features  
+    (Le fait d'activer les Advanced Features ajoute des possibilités de paramétrage dans les différentes fenêtres de configuration AD.)  
+3 - Dérouler l'arborescence sous le domaine rue25.com  
+4 - Créer 3 OU sur la racine du domaine en faisant un clic-droit, puis "New" > "Organizational Unit"  
+    - Rue_Utilisateurs  
+    - Rue_Ordinateurs  
+    - Rue_Securite  
+5 - Dans l'OU "Rue_Utilisateurs", créer 4 OU en faisant un clic-droit, puis "New" > "Organizational Unit"  
+    - Direction  
+    - Immobilier  
+    - Commercial  
+    - Comptabilité  
+Faire la même chose pour l'OU "Rue_Ordinateurs"  
 
+#### Création des utilisateurs    
+  
+1 - Dans l’OU Rue_Utilisateurs > Direction, faites un clic-droit dans la fenêtre centrale, puis "New" > "User"   
+2 - Dans "First Name" taper : Sylvie  ;  dans "Last name" taper : Bien ; dans "User logon name" taper : sylvie.bien  , puis cliquer sur "Next"  
+3 - Dans "Password" Taper un mot de passe ; puis saisissez-le à nouveau dans "Confirm"  
+4 - Décocher "User must change password at next logon"  et cocher "user cannot change password" et "Password never expires" , puis cliquer sur "Next", puis "Finish".  
+5 - Faites la même chose pour "Lisa RAZOU"  
+6 - Dans l’OU Rue_Utilisateurs > Immobilier , faites les mêmes manipulations pour ajouter les utilisateurs "Alain FIRMERIE" et "Mehdi TEZ"  
+7 - Dans l’OU Rue_Utilisateurs > Commercial , faites les mêmes manipulations pour ajouter les utilisateurs "Jonathan LONGTEMPS" et "Paul DUNOR"  
+8 - Dans l’OU Rue_Utilisateurs > Comptabilité , faites les mêmes manipulations pour ajouter les utilisateurs "Vincent TYME" et "Cyrène DEMER"  
+9 - Dans l’OU Rue_Utilisateurs > Direction, faites un clic-droit dans la fenêtre centrale, puis "New" > "User"    
+10 - Dans "First Name" taper : Samira  ;  dans "Last name" taper : Bien ; dans "User logon name" taper : samira.bien  , puis cliquer sur "Next"  
+11 - Dans "Password" Taper un mot de passe ; puis saisissez-le à nouveau dans "Confirm"  
+12 - Décocher "User must change password at next logon"  et cocher "user cannot change password" et "Password never expires" , puis cliquer sur "Next", puis "Finish".  
+  
+#### Création des groupes de sécurité  
+
+1 - Dans l’OU Rue_Utilisateurs > Direction, faites un clic-droit dans la fenêtre centrale, puis "New" > "Group"    
+2 - Dans "Group name" mettre "grp_direction"  
+3 - Dans "Group scope", sélectionner "Domain local"  
+4 - Dans "Group type", sélectionner "Security", puis valider avec "OK"  
+5 - Double cliquer sur le groupe que vous venez de créer  
+6 - Aller dans l'onglet "Members", puis cliquer sur "Add"  
+7 - Dans "Enter the object name to select" entrer les personnes qui font parties de ce groupe, vérifier à chaque fois les noms en cliquant sur "Check Names" puis faites "OK" pour ajouter, ensuite cliquer sur "Apply"  
+8 - Recommencer les étapes 1 à 7 pour les OU Immobilier, Commercial et Comptabilité  
+9 - Dans l’OU Rue_Utilisateurs > Direction, faites un clic-droit dans la fenêtre centrale, puis "New" > "Group"   
+10 - Dans "Group name" mettre "directrice"  
+11 - Dans "Group scope", sélectionner "Domain local"  
+12 - Dans "Group type", sélectionner "Security", puis valider avec "OK"  
+13 - Double cliquer sur le groupe que vous venez de créer  
+14 - Aller dans l'onglet "Members", puis cliquer sur "Add"  
+15 - Dans "Enter the object name to select" entrer "Samira" vérifier le nom en cliquant sur "Check Names" puis faites "OK" pour ajouter, ensuite cliquer sur "Apply"  
+
+#### Création des dossiers partagés  
  
+1 - Aller à la racine du lecteur C:  
+2 - Faites un clic-droit puis, sélectionner "New", puis "Folder", nommer ce dossier "Direction"  
+3 - Faites un clic-droit sur ce dossier, puis sélectionner "Properties"  
+4 - Aller sur l'onglet "Sharing"  
+5 - Cliquer sur "Advanced sharing..."  
+6 - Cocher la case " Share this folder"  
+7 - Cliquer sur "Remove" pour enlever "Everyone"  
+7 - Cliquer sur "Permissions"  
+8 - Cliquer sur "Add"  
+9 - Dans "Enter the object name to select" entrer le nom du groupe "grp_direction", vérifier le nom en cliquant sur "Check Names" puis faites "OK" pour ajouter 
+10 - Cocher la case "Change" dans la colonne "Allow", puis cliquer sur "Apply" puis "OK"  
+11 - Valider les modifications du partage avancée (Advanced Sharing") avec "Apply, puis "OK", puis fermer avec "Close"  
+12 - Refaire les mêmes étapes en créant un dossier "Immobilier"  et rajouter en plus dans les permissions le groupe "Directrice" mais en ne sélectionnant que "Read" dans la colonne "Allow"  
+13 - Refaire les mêmes étapes en créant un dossier "Commercial"  et rajouter en plus dans les permissions le groupe "Directrice" et "Comptabilité" mais en ne sélectionnant que "Read" dans la colonne "Allow"  
+14 - Refaire les mêmes étapes en créant un dossier "Comptabilité"  et rajouter en plus dans les permissions le groupe "Directrice" mais en ne sélectionnant que "Read" dans la colonne "Allow"  
+  
